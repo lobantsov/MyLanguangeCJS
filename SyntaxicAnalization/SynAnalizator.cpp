@@ -376,7 +376,7 @@ bool SynAnalizator::ForCheck()
     //foreach
     if(LexAnalizator::FinalLexConfig[singletone_currentposition->currentPosition].lexID==23)
     {
-        LexAnalizator::FinalLexConfig[currentPos].data_string="foreach";
+        LexAnalizator::FinalLexConfig[currentPos].data="foreach";
         //colection
         singletone_currentposition->currentPosition++;
         if(LexAnalizator::FinalLexConfig[singletone_currentposition->currentPosition].lexID==15)
@@ -448,7 +448,7 @@ bool SynAnalizator::ForCheck()
     //for
     else if(LexAnalizator::FinalLexConfig[singletone_currentposition->currentPosition].lexID==0)
     {
-        LexAnalizator::FinalLexConfig[currentPos].data_string="for";
+        LexAnalizator::FinalLexConfig[currentPos].data="for";
         singletone_currentposition->currentPosition++;
         // singletone_currentposition->currentPosition++;
         //cond check

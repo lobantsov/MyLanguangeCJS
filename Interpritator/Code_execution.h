@@ -21,13 +21,15 @@ public:
     void Execution();
     void EqualExecute(Lex tmp1, Lex tmp2);
     Lex MathOperators(Lex operator_, Lex tmp2, Lex tmp1);
-    bool CheckLogicSentence(Lex operator_, Lex tmp1, Lex tmp2);
+
+    Lex CheckLogicSentence(Lex operator_, Lex tmp1, Lex tmp2);
     bool CheckVarOrConst(const Lex& lex);
     Lex FindLex(Lex lex);
     std::string CheckTypeOfConst(Lex lex);
     std::string CheckTypeOfVar(Lex lex);
     void EaserMyLive();
-    double stringToNumber(const std::string& str);
+
+    std::variant<std::string, bool, char,double> stringToNumber(const std::string &str);
 };
 
 
