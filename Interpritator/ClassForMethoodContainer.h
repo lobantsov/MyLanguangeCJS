@@ -14,6 +14,10 @@ public:
     std::string ExecuteStringSyntaxic(const std::string& lexValue);
     bool IsLogicOperator(const Lex& lex);
     bool IsMathOperator(const Lex& lex);
+
+    bool IsMathOperatorWhitoutIncrement(const Lex &lex);
+
+    bool IsIncrementa(const Lex &lex);
 };
 
 

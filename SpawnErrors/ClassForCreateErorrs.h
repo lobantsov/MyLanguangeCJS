@@ -19,6 +19,9 @@ public:
     SingletoneCurrentposition *singletone_currentposition = SingletoneCurrentposition::GetInstance();
     void CreateSyntaxError();
     void CreateDeclarationError();
+
+    void CreateTypeMismatchError();
+
     bool error_status = false;
 };
 

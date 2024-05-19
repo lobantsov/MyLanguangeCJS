@@ -14,13 +14,13 @@ public:
     int lexLine=-1;
     int dataTypeID=-1;
     int array=-1;//-1 - is not array     0 - is array without new       1 - is array was init
-    std::variant<std::string, bool, char, double> data;
+    std::variant<std::string, bool, char, double, int> data;
     bool operator==(const Lex& other) const {
         return value == other.value && lexID == other.lexID && dataTypeID == other.dataTypeID;
     }
     Lex& operator+=(const Lex& other) {
         data = std::visit(overloaded{
-            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double> {
+            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double,int> {
                 using T = std::decay_t<decltype(a)>;
                 using U = std::decay_t<decltype(b)>;
                 if constexpr (std::is_same_v<T, std::string> && std::is_same_v<U, std::string>) {
@@ -39,7 +39,7 @@ public:
 
     Lex& operator-=(const Lex& other) {
         data = std::visit(overloaded{
-            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double> {
+            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double,int> {
                 using T = std::decay_t<decltype(a)>;
                 using U = std::decay_t<decltype(b)>;
                 if constexpr (std::is_same_v<T, double> && std::is_same_v<U, double>) {
@@ -54,7 +54,7 @@ public:
 
     Lex& operator*=(const Lex& other) {
         data = std::visit(overloaded{
-            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double> {
+            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double,int> {
                 using T = std::decay_t<decltype(a)>;
                 using U = std::decay_t<decltype(b)>;
                 if constexpr (std::is_same_v<T, double> && std::is_same_v<U, double>) {
@@ -69,7 +69,7 @@ public:
 
     Lex& operator/=(const Lex& other) {
         data = std::visit(overloaded{
-            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double> {
+            [](auto&& a, auto&& b) -> std::variant<std::string, bool, char, double,int> {
                 using T = std::decay_t<decltype(a)>;
                 using U = std::decay_t<decltype(b)>;
                 if constexpr (std::is_same_v<T, double> && std::is_same_v<U, double>) {
@@ -160,10 +160,19 @@ public:
                 std::ostringstream oss;
                 oss << arg;
                 return oss.str();
+            },
+            [](int arg) -> std::string {
+                std::ostringstream oss;
+                oss << arg;
+                return oss.str();
             }
         }, data);
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const Lex& lex) {
+        os << lex.toString();
+        return os;
+    }
 private:
     template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
     template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;

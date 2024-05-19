@@ -6,6 +6,7 @@
 #define CODE_EXECUTION_H
 #pragma once
 #include "Polish_Inverse_Writing.h"
+#include "../SpawnErrors/ClassForCreateErorrs.h"
 #include "../SyntaxicAnalization/SingletoneDeclaretedVariables/DeclareredVariables.h"
 
 class Code_execution
@@ -16,6 +17,7 @@ private:
     std::stack<Lex> tmp_stack;
     ClassForMethoodContainer *class_for_methood_container_ = new ClassForMethoodContainer();
     DeclareredVariables *declarered_variables_ = DeclareredVariables::GetInstance();
+    ClassForCreateErorrs *class_for_create_erorrs_ = ClassForCreateErorrs::GetInstance();
     int iterator=0;
 public:
     void Execution();
@@ -23,13 +25,20 @@ public:
     Lex MathOperators(Lex operator_, Lex tmp2, Lex tmp1);
 
     Lex CheckLogicSentence(Lex operator_, Lex tmp1, Lex tmp2);
-    bool CheckVarOrConst(const Lex& lex);
-    Lex FindLex(Lex lex);
-    std::string CheckTypeOfConst(Lex lex);
-    std::string CheckTypeOfVar(Lex lex);
+
+    void Incrementa(Lex operator_, Lex var);
+
+    void Write(Lex var);
+
+    void Read(Lex var);
+
     void EaserMyLive();
 
-    std::variant<std::string, bool, char,double> stringToNumber(const std::string &str);
+    void UpdataVariableData(Lex lex);
+
+    std::variant<std::string, bool, char, double, int> stringToNumber(const std::string &str);
+
+
 };
 
 
