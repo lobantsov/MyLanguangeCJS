@@ -34,7 +34,7 @@ public:
 
     void EaserMyLive();
 
-    void UpdataVariableData(Lex lex);
+    void UpdataVariableData(const Lex &lex);
 
     std::variant<std::string, bool, char, double, int> stringToNumber(const std::string &str);
 

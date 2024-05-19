@@ -18,6 +18,7 @@ private:
     std::stack<Lex> stack_tmp;
     std::stack<std::string> callBack;
     std::stack<Lex> tmpVectorForMovingSomeOperators;
+    std::stack<Lex> callBack_mark;
     Strainer *strainer = new Strainer();
     std::vector<Lex> source_string_stack;
     ClassForMethoodContainer *class_for_methood_container_ = new ClassForMethoodContainer();

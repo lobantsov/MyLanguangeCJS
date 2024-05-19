@@ -55,20 +55,11 @@ void Code_execution::Execution() {
                 tmp_stack.pop();
             }
         }
-
-
         iterator++;
     }
 }
 
 void Code_execution::EqualExecute(Lex tmp2, Lex tmp1) {
-    // for (Lex &op: declarered_variables_->CreatedLexemus) {
-    //     if (tmp2.value == op.value) {
-    //         op.data = tmp1.data;
-    //         break;
-    //     }
-    // }
-
     for (int i = 0; i < source_string_stack.size(); i++) {
         if (source_string_stack[i].value == tmp2.value)
             source_string_stack[i].data = tmp1.data;
@@ -139,10 +130,8 @@ void Code_execution::Incrementa(Lex operator_, Lex var) {
     } else if (operator_.value == "**") {
         var *= var;
     }
-    for (int i = 0; i < source_string_stack.size(); i++) {
-        if (source_string_stack[i].value == var.value)
-            source_string_stack[i].data = var.data;
-    }
+
+    UpdataVariableData(var);
 }
 
 void Code_execution::Write(Lex var) {
@@ -224,10 +213,10 @@ void Code_execution::EaserMyLive() {
     }
 }
 
-void Code_execution::UpdataVariableData(Lex lex) {
-    for (Lex& line1: source_string_stack) {
-        if(line1.value == lex.value) {
-            line1.data = lex.data;
+void Code_execution::UpdataVariableData(const Lex& lex) {
+    for (auto &[value, lexID, lexLine, dataTypeID, array, data]: source_string_stack) {
+        if (value == lex.value) {
+            data = lex.data;
         }
     }
 }
