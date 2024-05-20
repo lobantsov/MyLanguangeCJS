@@ -23,13 +23,21 @@ private:
     std::vector<Lex> source_string_stack;
     ClassForMethoodContainer *class_for_methood_container_ = new ClassForMethoodContainer();
 
+    int CurrentMetka=-1;
+    std::pmr::vector<int> vector_of_metkes;
+    bool access=false;
+    std::stack<Lex*> Comamnds;
+
     int getPriority(const std::string& op);
     void set_right_place_into_source_line_for_math_operators(const Lex& op);
     Lex CreateNewComand(const std::string& typeComand);
+
+    int FindMarkIndex(int iteratorValue);
+
     int mathOperatorPushBack=0;
     int addingIntoTmpIncrementaStack=0;
     int iterator=6;
-    bool forOperator=true;
+    bool forOperator=false;
 public:
     std::vector<Lex> FormingSourceLine();
 };

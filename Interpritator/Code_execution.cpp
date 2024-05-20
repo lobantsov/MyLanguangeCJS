@@ -214,9 +214,9 @@ void Code_execution::EaserMyLive() {
 }
 
 void Code_execution::UpdataVariableData(const Lex& lex) {
-    for (auto &[value, lexID, lexLine, dataTypeID, array, data]: source_string_stack) {
-        if (value == lex.value) {
-            data = lex.data;
+    for (Lex & lex1: source_string_stack) {
+        if (lex1.value == lex.value) {
+           lex1.data = lex.data;
         }
     }
 }

@@ -15,6 +15,9 @@ public:
     int dataTypeID=-1;
     int array=-1;//-1 - is not array     0 - is array without new       1 - is array was init
     std::variant<std::string, bool, char, double, int> data;
+
+    int IndexOfMarkIntoMarkVector=-1;
+
     bool operator==(const Lex& other) const {
         return value == other.value && lexID == other.lexID && dataTypeID == other.dataTypeID;
     }
