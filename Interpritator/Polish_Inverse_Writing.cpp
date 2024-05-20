@@ -119,7 +119,7 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 mathOperatorPushBack = 0;
             if (callBack.top() == "while") {
                 source_string_stack.push_back(CreateNewComand("Condition"));
-                Comamnds.push(&source_string_stack[source_string_stack.size() - 1]);
+                Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
 
                 CurrentMetka++;
                 vector_of_metkes.push_back(-1);
@@ -128,10 +128,10 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 Lex tmp = CreateNewComand("Condition");
                 tmp.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = tmpMetkaForDoWhile;
                 tmpVectorForMovingSomeOperators.push(tmp);
-                Comamnds.push(&source_string_stack[source_string_stack.size() - 1]);
+                //Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
             } else if (callBack.top() == "if") {
                 source_string_stack.push_back(CreateNewComand("Condition"));
-                Comamnds.push(&source_string_stack[source_string_stack.size() - 1]);
+                Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
                 source_string_stack.push_back(CreateNewComand("Move"));
             }
             stack_tmp.pop();
@@ -144,7 +144,7 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
             // for while
             if (!callBack.empty() and callBack.top() == "while") {
                 source_string_stack.push_back(CreateNewComand("Move"));
-                int tmpIndex = FindMarkIndex(-1);
+                int tmpIndex = FindMarkIndex(-1, true);
                 source_string_stack[source_string_stack.size() - 1]
                         .IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = vector_of_metkes[tmpIndex];
                 vector_of_metkes[tmpIndex] *= -1;
@@ -164,16 +164,13 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                     tmpVectorForMovingSomeOperators.pop();
                     addingIntoTmpIncrementaStack--;
                 }
-                int tmpIndex = FindMarkIndex(-1);
+                int tmpIndex = FindMarkIndex(-1, true);
                 source_string_stack[source_string_stack.size() - 1]
                         .IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = vector_of_metkes[tmpIndex];
                 vector_of_metkes[tmpIndex] *= -1;
                 vector_of_metkes[tmpIndex + 1] = source_string_stack.size();
             }
-            if(callBack.top() == "While" or callBack.top() == "for") {
 
-                Comamnds.pop();
-            }
             stack_tmp.pop();
             callBack.pop();
         } else if (lex.value == ";") {
@@ -199,7 +196,7 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                     if (class_for_methood_container_->IsLogicOperator(
                         source_string_stack[source_string_stack.size() - 1])) {
                         source_string_stack.push_back(CreateNewComand("Condition"));
-                        Comamnds.push(&source_string_stack[source_string_stack.size() - 1]);
+                        Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
 
                         CurrentMetka++;
                         vector_of_metkes.push_back(-1);
@@ -222,6 +219,14 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
         }
         iterator++;
     }
+
+    while (!Comamnds.empty()) {
+        int tmp = FindMarkIndex(-1, false);
+        vector_of_metkes[tmp] *= -1;
+        SetValue(vector_of_metkes[tmp], vector_of_metkes[tmp + 1]);
+        Comamnds.pop();
+    }
+
     return source_string_stack;
 }
 
@@ -267,20 +272,40 @@ Lex Polish_Inverse_Writing::CreateNewComand(const std::string &typeComand) {
     return tmp;
 }
 
-int Polish_Inverse_Writing::FindMarkIndex(int iteratorValue) {
+int Polish_Inverse_Writing::FindMarkIndex(int iteratorValue, bool swithwer) {
     int iterator = iteratorValue;
     int a = vector_of_metkes[CurrentMetka + iterator];
-
-    if (iterator == -1) {
-        while (a < 0) {
-            iterator -= 2;
-            a = vector_of_metkes[CurrentMetka + iterator];
+    if (swithwer) {
+        if (iterator == -1) {
+            while (a < 0) {
+                iterator -= 2;
+                a = vector_of_metkes[CurrentMetka + iterator];
+            }
+        } else if (iterator == 0) {
+            while (a != -1) {
+                iterator -= 2;
+                a = vector_of_metkes[CurrentMetka + iterator];
+            }
         }
-    } else if (iterator == 0) {
-        while (a != -1) {
-            iterator -= 2;
-            a = vector_of_metkes[CurrentMetka + iterator];
+        return CurrentMetka + iterator;
+    } else {
+        if (iterator == -1) {
+            while (a > 0) {
+                iterator -= 2;
+                a = vector_of_metkes[CurrentMetka + iterator];
+            }
+        }
+        return CurrentMetka + iterator;
+    }
+}
+
+void Polish_Inverse_Writing::SetValue(int equeal, int border) {
+    for (int i = equeal; i < border; i++) {
+        if (source_string_stack[i].IndexOfMarkIntoMarkVectorFOR_COMMAND_IF == -1 and
+            source_string_stack[i].IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE == -1 and
+            source_string_stack[i].lexID == 200) {
+            source_string_stack[i].IndexOfMarkIntoMarkVectorFOR_COMMAND_IF = border;
+            break;
         }
     }
-    return CurrentMetka + iterator;
 }

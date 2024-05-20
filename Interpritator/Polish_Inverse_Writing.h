@@ -26,7 +26,7 @@ private:
     int CurrentMetka = -1;
     std::pmr::vector<int> vector_of_metkes;
     bool access = false;
-    std::stack<Lex*> Comamnds;
+    std::stack<Lex> Comamnds;
     int tmpMetkaForDoWhile = -1;
 
     int getPriority(const std::string &op);
@@ -35,7 +35,9 @@ private:
 
     Lex CreateNewComand(const std::string &typeComand);
 
-    int FindMarkIndex(int iteratorValue);
+    int FindMarkIndex(int iteratorValue, bool swithwer);
+
+    void SetValue(int equeal, int borser);
 
     int mathOperatorPushBack = 0;
     int addingIntoTmpIncrementaStack = 0;
