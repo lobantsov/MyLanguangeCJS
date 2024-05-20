@@ -38,7 +38,7 @@ public:
 
     std::variant<std::string, bool, char, double, int> stringToNumber(const std::string &str);
 
-
+    void CommandEction(Lex lex);
 };
 
 

@@ -23,6 +23,7 @@ public:
     return value == other.value && lexID == other.lexID &&
            dataTypeID == other.dataTypeID;
   }
+
   Lex &operator+=(const Lex &other) {
     data = std::visit(
         overloaded{[](auto &&a, auto &&b)

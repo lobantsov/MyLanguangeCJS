@@ -8,7 +8,7 @@
 void Code_execution::Execution() {
     source_string_stack = inverse_writing->FormingSourceLine();
     EaserMyLive();
-    while (source_string_stack.size() != iterator) {
+    while (source_string_stack.size() > iterator) {
         Lex &lex = source_string_stack[iterator];
         int constantID = LexAnalizator::SingleLexConfig.size() + LexAnalizator::MultiplyLexConfig.size() + 1;
         int variableID = LexAnalizator::SingleLexConfig.size() + LexAnalizator::MultiplyLexConfig.size() + 2;
@@ -54,6 +54,9 @@ void Code_execution::Execution() {
                 Read(tmp_stack.top());
                 tmp_stack.pop();
             }
+        }
+        else if(lex.value=="Command_if" or lex.value=="Command_move") {
+            CommandEction(lex);
         }
         iterator++;
     }
@@ -229,4 +232,17 @@ std::variant<std::string, bool, char, double, int> Code_execution::stringToNumbe
         throw std::invalid_argument("Invalid input string");
     }
     return number;
+}
+
+void Code_execution::CommandEction(Lex lex) {
+    if(lex.value == "Command_if") {
+        if(tmp_stack.top().value == "false") {
+            iterator = lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_IF;
+        }
+        tmp_stack.pop();
+    }
+    else if(lex.value == "Command_move") {
+        iterator = lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE;
+        iterator--;
+    }
 }
