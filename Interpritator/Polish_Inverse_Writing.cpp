@@ -6,21 +6,27 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
     strainer->groupQuotedLexemes();
     while (iterator < LexAnalizator::FinalLexConfig.size() - 1) {
         Lex &lex = LexAnalizator::FinalLexConfig[iterator];
-        int constantID = LexAnalizator::SingleLexConfig.size() + LexAnalizator::MultiplyLexConfig.size() + 1;
-        int variableID = LexAnalizator::SingleLexConfig.size() + LexAnalizator::MultiplyLexConfig.size() + 2;
+        int constantID = LexAnalizator::SingleLexConfig.size() +
+                         LexAnalizator::MultiplyLexConfig.size() + 1;
+        int variableID = LexAnalizator::SingleLexConfig.size() +
+                         LexAnalizator::MultiplyLexConfig.size() + 2;
 
-        bool isOperatorBefore = (iterator > 0) && class_for_methood_container_->isOperation(
-                                    LexAnalizator::FinalLexConfig[iterator - 1].value);
-        bool isOperatorAfter = (iterator + 1 < LexAnalizator::FinalLexConfig.size()) &&
-                               (class_for_methood_container_->isOperation(
-                                    LexAnalizator::FinalLexConfig[iterator + 1].value) || LexAnalizator::FinalLexConfig[
-                                    iterator + 1].value == ")");
+        bool isOperatorBefore =
+                (iterator > 0) &&
+                class_for_methood_container_->isOperation(
+                    LexAnalizator::FinalLexConfig[iterator - 1].value);
+        bool isOperatorAfter =
+                (iterator + 1 < LexAnalizator::FinalLexConfig.size()) &&
+                (class_for_methood_container_->isOperation(
+                     LexAnalizator::FinalLexConfig[iterator + 1].value) ||
+                 LexAnalizator::FinalLexConfig[iterator + 1].value == ")");
 
-        if ((lex.lexID == constantID || lex.lexID == variableID) && (isOperatorBefore || isOperatorAfter)) {
-            if (!callBack.empty() and callBack.top() == "for" and (source_string_stack.size() > 2 and
-                                                                   class_for_methood_container_->IsLogicOperator(
-                                                                       source_string_stack[
-                                                                           source_string_stack.size() - 2])) and
+        if ((lex.lexID == constantID || lex.lexID == variableID) &&
+            (isOperatorBefore || isOperatorAfter)) {
+            if (!callBack.empty() and callBack.top() == "for" and
+                (source_string_stack.size() > 2 and
+                 class_for_methood_container_->IsLogicOperator(
+                     source_string_stack[source_string_stack.size() - 2])) and
                 forOperator) {
                 tmpVectorForMovingSomeOperators.push(CreateNewComand("Move"));
                 tmpVectorForMovingSomeOperators.push(lex);
@@ -31,63 +37,70 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
             }
         } else if (lex.value == "(") {
             stack_tmp.push(lex);
-            if (!callBack.empty() and callBack.top() == "while") {
+            if (!callBack.empty() and callBack.top() == "while" or
+                callBack.top() == "if") {
                 CurrentMetka++;
                 vector_of_metkes.push_back(-1);
                 vector_of_metkes[CurrentMetka] = source_string_stack.size();
+            } else if (!callBack.empty() and callBack.top() == "do_while") {
+                tmpMetkaForDoWhile = source_string_stack.size();
             }
         } else if (lex.value == "{") {
             stack_tmp.push(lex);
         }
-        //operators
+        // operators
         else if (class_for_methood_container_->isOperation(lex.value)) {
-            //math and logic operators
-            if (class_for_methood_container_->IsLogicOperator(lex) or class_for_methood_container_->IsMathOperator(lex)
-                or lex.value == "=") {
+            // math and logic operators
+            if (class_for_methood_container_->IsLogicOperator(lex) or
+                class_for_methood_container_->IsMathOperator(lex) or
+                lex.value == "=") {
                 set_right_place_into_source_line_for_math_operators(lex);
             }
-            //check write operator
+            // check write operator
             else if (lex.value == "write") {
-                //skip ( and write
+                // skip ( and write
                 iterator++;
                 iterator++;
-                //string or char data type
-                if (LexAnalizator::FinalLexConfig[iterator].dataTypeID == 381 or LexAnalizator::FinalLexConfig[iterator]
-                    .dataTypeID == 391) {
-                    //create new lex without " "
+                // string or char data type
+                if (LexAnalizator::FinalLexConfig[iterator].dataTypeID == 381 or
+                    LexAnalizator::FinalLexConfig[iterator].dataTypeID == 391) {
+                    // create new lex without " "
                     Lex tmp;
                     tmp.value = class_for_methood_container_->ExecuteStringSyntaxic(
                         LexAnalizator::FinalLexConfig[iterator].value);
                     tmp.lexLine = LexAnalizator::FinalLexConfig[iterator].lexLine;
                     tmp.dataTypeID = LexAnalizator::FinalLexConfig[iterator].dataTypeID;
-                    tmp.lexID = LexAnalizator::SingleLexConfig.size() + LexAnalizator::MultiplyLexConfig.size() + 2;
+                    tmp.lexID = LexAnalizator::SingleLexConfig.size() +
+                                LexAnalizator::MultiplyLexConfig.size() + 2;
                     source_string_stack.push_back(tmp);
                     source_string_stack.push_back(lex);
 
-                    //skip )
+                    // skip )
                     iterator++;
                 } else {
-                    source_string_stack.push_back(LexAnalizator::FinalLexConfig[iterator]);
+                    source_string_stack.push_back(
+                        LexAnalizator::FinalLexConfig[iterator]);
                     source_string_stack.push_back(lex);
 
-                    //skip )
+                    // skip )
                     iterator++;
                 }
             }
-            //check read
+            // check read
             else if (lex.value == "read") {
-                //skip ( and write
+                // skip ( and write
                 iterator++;
                 iterator++;
 
                 source_string_stack.push_back(LexAnalizator::FinalLexConfig[iterator]);
                 source_string_stack.push_back(lex);
 
-                //skip )
+                // skip )
                 iterator++;
             }
-            //loop
-            else if (lex.value == "for" or lex.value == "while" or lex.value == "do_while") {
+            // loop
+            else if (lex.value == "for" or lex.value == "while" or
+                     lex.value == "do_while") {
                 callBack.push(lex.value);
                 stack_tmp.push(lex);
                 access = true;
@@ -100,7 +113,8 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 source_string_stack.push_back(stack_tmp.top());
                 stack_tmp.pop();
             }
-            if (mathOperatorPushBack != 0 and class_for_methood_container_->IsLogicOperator(
+            if (mathOperatorPushBack != 0 and
+                class_for_methood_container_->IsLogicOperator(
                     source_string_stack[source_string_stack.size() - 1]))
                 mathOperatorPushBack = 0;
             if (callBack.top() == "while") {
@@ -111,7 +125,9 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 vector_of_metkes.push_back(-1);
                 vector_of_metkes[CurrentMetka] = -1;
             } else if (callBack.top() == "do_while") {
-                tmpVectorForMovingSomeOperators.push(CreateNewComand("Condition"));
+                Lex tmp = CreateNewComand("Condition");
+                tmp.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = tmpMetkaForDoWhile;
+                tmpVectorForMovingSomeOperators.push(tmp);
                 Comamnds.push(&source_string_stack[source_string_stack.size() - 1]);
             } else if (callBack.top() == "if") {
                 source_string_stack.push_back(CreateNewComand("Condition"));
@@ -125,43 +141,43 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
             }
             stack_tmp.pop();
 
-            //for while
+            // for while
             if (!callBack.empty() and callBack.top() == "while") {
                 source_string_stack.push_back(CreateNewComand("Move"));
                 int tmpIndex = FindMarkIndex(-1);
-                source_string_stack[source_string_stack.size() - 1].IndexOfMarkIntoMarkVector = vector_of_metkes[
-                    tmpIndex];
+                source_string_stack[source_string_stack.size() - 1]
+                        .IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = vector_of_metkes[tmpIndex];
                 vector_of_metkes[tmpIndex] *= -1;
+                vector_of_metkes[tmpIndex + 1] = source_string_stack.size();
             } else if (!callBack.empty() and callBack.top() == "do_while") {
+                tmpVectorForMovingSomeOperators.top().IndexOfMarkIntoMarkVectorFOR_COMMAND_IF =
+                        source_string_stack.size() + 1;
                 source_string_stack.push_back(tmpVectorForMovingSomeOperators.top());
                 tmpVectorForMovingSomeOperators.pop();
-                source_string_stack.push_back(CreateNewComand("Move"));
             } else if (!callBack.empty() and callBack.top() == "if") {
                 if (LexAnalizator::FinalLexConfig[iterator + 1].value == "else")
                     source_string_stack.push_back(CreateNewComand("Move"));
             } else if (callBack.top() == "for") {
-                //for for
-                while (addingIntoTmpIncrementaStack != 0) {
+                // for for
+                for (int i = 0; i < 3; i++) {
                     source_string_stack.push_back(tmpVectorForMovingSomeOperators.top());
                     tmpVectorForMovingSomeOperators.pop();
                     addingIntoTmpIncrementaStack--;
                 }
                 int tmpIndex = FindMarkIndex(-1);
-                source_string_stack[source_string_stack.size() - 1].IndexOfMarkIntoMarkVector = vector_of_metkes[
-                    tmpIndex];
+                source_string_stack[source_string_stack.size() - 1]
+                        .IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = vector_of_metkes[tmpIndex];
                 vector_of_metkes[tmpIndex] *= -1;
+                vector_of_metkes[tmpIndex + 1] = source_string_stack.size();
             }
-            int tmpIndex = FindMarkIndex(0);
-            //choose place
-            vector_of_metkes[tmpIndex]=source_string_stack.size();
-            source_string_stack[source_string_stack.size() - 1].IndexOfMarkIntoMarkVector = vector_of_metkes[tmpIndex];
+            if(callBack.top() == "While" or callBack.top() == "for") {
 
+                Comamnds.pop();
+            }
             stack_tmp.pop();
             callBack.pop();
-            Comamnds.top()->IndexOfMarkIntoMarkVector = source_string_stack.size();
-            Comamnds.pop();
         } else if (lex.value == ";") {
-            //check math singt
+            // check math singt
             if (mathOperatorPushBack > 0) {
                 while (mathOperatorPushBack != 0) {
                     source_string_stack.push_back(stack_tmp.top());
@@ -169,10 +185,10 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                     mathOperatorPushBack--;
                 }
             }
-            //check callBack
+            // check callBack
             if (!callBack.empty()) {
                 if (callBack.top() == "for") {
-                    //check i<10
+                    // check i<10
                     if (access) {
                         CurrentMetka++;
                         vector_of_metkes.push_back(-1);
@@ -189,12 +205,13 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                         vector_of_metkes.push_back(-1);
                         vector_of_metkes[CurrentMetka] = -1;
                     }
-                    //check and add to tmp stack i++
+                    // check and add to tmp stack i++
                     else if (class_for_methood_container_->IsMathOperator(
                         source_string_stack[source_string_stack.size() - 1])) {
                         Lex tmp = tmpVectorForMovingSomeOperators.top();
                         tmpVectorForMovingSomeOperators.pop();
-                        tmpVectorForMovingSomeOperators.push(source_string_stack[source_string_stack.size() - 1]);
+                        tmpVectorForMovingSomeOperators.push(
+                            source_string_stack[source_string_stack.size() - 1]);
                         source_string_stack.pop_back();
                         tmpVectorForMovingSomeOperators.push(tmp);
                         addingIntoTmpIncrementaStack++;
@@ -209,16 +226,24 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
 }
 
 int Polish_Inverse_Writing::getPriority(const std::string &op) {
-    if (op == "=" || op == "+=" || op == "-=" || op == "*=" || op == "/=") return 1; // Присвоєння
-    if (op == "<" || op == ">" || op == "<=" || op == ">=" || op == "==" || op == "!=") return 4; // Порівняння
-    if (op == "+" || op == "-") return 5; // Додавання та віднімання
-    if (op == "*" || op == "/") return 6; // Множення та ділення
-    if (op == "++" || op == "--" || op == "**") return 7; // Інкремент, декремент, степінь
-    if (op == "(" || op == "{" || op == ")" || op == "}") return -1; // Дужки
+    if (op == "=" || op == "+=" || op == "-=" || op == "*=" || op == "/=")
+        return 1; // Присвоєння
+    if (op == "<" || op == ">" || op == "<=" || op == ">=" || op == "==" ||
+        op == "!=")
+        return 4; // Порівняння
+    if (op == "+" || op == "-")
+        return 5; // Додавання та віднімання
+    if (op == "*" || op == "/")
+        return 6; // Множення та ділення
+    if (op == "++" || op == "--" || op == "**")
+        return 7; // Інкремент, декремент, степінь
+    if (op == "(" || op == "{" || op == ")" || op == "}")
+        return -1; // Дужки
     return 0; // За замовчуванням
 }
 
-void Polish_Inverse_Writing::set_right_place_into_source_line_for_math_operators(const Lex &op) {
+void Polish_Inverse_Writing::
+set_right_place_into_source_line_for_math_operators(const Lex &op) {
     int priority = getPriority(op.value);
 
     while (!stack_tmp.empty() && getPriority(stack_tmp.top().value) >= priority) {
@@ -246,7 +271,7 @@ int Polish_Inverse_Writing::FindMarkIndex(int iteratorValue) {
     int iterator = iteratorValue;
     int a = vector_of_metkes[CurrentMetka + iterator];
 
-    if (iterator == 1) {
+    if (iterator == -1) {
         while (a < 0) {
             iterator -= 2;
             a = vector_of_metkes[CurrentMetka + iterator];
