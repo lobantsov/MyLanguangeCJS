@@ -1,4 +1,6 @@
 #pragma once
+#include <chrono>
+
 #include "Interpritator/Code_execution.h"
 #include "LexAnalizator/LexAnalizator.h"
 #include "SyntaxicAnalization/SynAnalizator.h"
@@ -43,7 +45,17 @@ int main() {
       while (SingletoneCurrentposition::currentPosition <
              LexAnalizator::FinalLexConfig.size()) {
         if (syn_analizator->OperatorCheck(true)) {
+          // start timer
+          auto start = chrono::high_resolution_clock::now();
+
           code_execution->Execution();
+
+          // end timer
+          auto end = chrono::high_resolution_clock::now();
+          auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+
+          cout << a << " - checked in " << duration << " seconds" << endl;
+          break;
           cout << a << "- checked" << endl;
           break;
         }

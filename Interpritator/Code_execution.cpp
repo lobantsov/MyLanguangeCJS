@@ -54,8 +54,7 @@ void Code_execution::Execution() {
                 Read(tmp_stack.top());
                 tmp_stack.pop();
             }
-        }
-        else if(lex.value=="Command_if" or lex.value=="Command_move") {
+        } else if (lex.value == "Command_if" or lex.value == "Command_move") {
             CommandEction(lex);
         }
         iterator++;
@@ -216,10 +215,10 @@ void Code_execution::EaserMyLive() {
     }
 }
 
-void Code_execution::UpdataVariableData(const Lex& lex) {
-    for (Lex & lex1: source_string_stack) {
+void Code_execution::UpdataVariableData(const Lex &lex) {
+    for (Lex &lex1: source_string_stack) {
         if (lex1.value == lex.value) {
-           lex1.data = lex.data;
+            lex1.data = lex.data;
         }
     }
 }
@@ -235,14 +234,21 @@ std::variant<std::string, bool, char, double, int> Code_execution::stringToNumbe
 }
 
 void Code_execution::CommandEction(Lex lex) {
-    if(lex.value == "Command_if") {
-        if(tmp_stack.top().value == "false") {
+    if (lex.value == "Command_if") {
+        if (tmp_stack.top().value == "false") {
             iterator = lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_IF;
+            iterator--;
+        } else if (lex.value == "Command_if" and lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE != -1) {
+            iterator = lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE;
+            iterator--;
         }
         tmp_stack.pop();
-    }
-    else if(lex.value == "Command_move") {
+    } else if (lex.value == "Command_move") {
         iterator = lex.IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE;
         iterator--;
     }
 }
+
+
+
+

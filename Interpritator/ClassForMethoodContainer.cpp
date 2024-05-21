@@ -1,5 +1,7 @@
 #pragma once
 #include "ClassForMethoodContainer.h"
+#include <algorithm>
+
 
 bool ClassForMethoodContainer::IsLogicOperator(const Lex &lex) {
     if (lex.value == "==" || lex.value == "<=" || lex.value == "<" || lex.value == ">=" || lex.value == ">" || lex.value
@@ -40,6 +42,6 @@ bool ClassForMethoodContainer::isOperation(const std::string &op) {
 
 std::string ClassForMethoodContainer::ExecuteStringSyntaxic(const std::string &lexValue) {
     std::string result = lexValue;
-    //  result.erase(std::remove(result.begin(), result.end(), '\"'), result.end());
+    result.erase(std::remove(result.begin(), result.end(), '\"'), result.end());
     return result;
 }
