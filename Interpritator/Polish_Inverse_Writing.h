@@ -6,6 +6,8 @@
 #define POLISH_INVERSE_WRITING_H
 
 #pragma once
+#include <array>
+
 #include "../LexAnalizator/Lex.h"
 #include "ClassForMethoodContainer.h"
 #include "Strainer.h"
@@ -28,6 +30,8 @@ private:
     bool access = false;
     std::stack<Lex> Comamnds;
     int tmpMetkaForDoWhile = -1;
+    std::array<int,4>arrayOfMarkersAndCommandForIF={0,0,0,0};
+    std::stack<std::array<int,4>> stack_of_array_of_markers_and_command_for_IF;
 
     int getPriority(const std::string &op);
 
@@ -38,6 +42,8 @@ private:
     int FindMarkIndex(int iteratorValue, bool swithwer);
 
     void SetValue(int equeal, int borser);
+
+    void DoWithIF();
 
     int mathOperatorPushBack = 0;
     int addingIntoTmpIncrementaStack = 0;

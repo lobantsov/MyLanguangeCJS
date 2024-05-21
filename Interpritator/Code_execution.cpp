@@ -248,7 +248,3 @@ void Code_execution::CommandEction(Lex lex) {
         iterator--;
     }
 }
-
-
-
-

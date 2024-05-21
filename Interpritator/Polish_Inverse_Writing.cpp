@@ -105,8 +105,14 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 stack_tmp.push(lex);
                 access = true;
             } else if (lex.value == "if" or lex.value == "else") {
+                if(lex.value=="if" and arrayOfMarkersAndCommandForIF[0]!=0) {
+                    stack_of_array_of_markers_and_command_for_IF.push(arrayOfMarkersAndCommandForIF);
+                }
                 stack_tmp.push(lex);
                 callBack.push(lex.value);
+                if (lex.value == "else") {
+                    arrayOfMarkersAndCommandForIF[2] = source_string_stack.size();
+                }
             }
         } else if (lex.value == ")") {
             while (stack_tmp.top().value != "(") {
@@ -131,8 +137,8 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 //Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
             } else if (callBack.top() == "if") {
                 source_string_stack.push_back(CreateNewComand("Condition"));
-                Comamnds.push(source_string_stack[source_string_stack.size() - 1]);
-                source_string_stack.push_back(CreateNewComand("Move"));
+                //save_commandIF
+                arrayOfMarkersAndCommandForIF[0] = source_string_stack.size() - 1;
             }
             stack_tmp.pop();
         } else if (lex.value == "}") {
@@ -155,8 +161,16 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
                 source_string_stack.push_back(tmpVectorForMovingSomeOperators.top());
                 tmpVectorForMovingSomeOperators.pop();
             } else if (!callBack.empty() and callBack.top() == "if") {
-                if (LexAnalizator::FinalLexConfig[iterator + 1].value == "else")
-                    source_string_stack.push_back(CreateNewComand("Move"));
+                source_string_stack.push_back(CreateNewComand("Move"));
+                arrayOfMarkersAndCommandForIF[1] = source_string_stack.size() - 1;
+                if (LexAnalizator::FinalLexConfig[iterator + 1].value != "else") {
+                    arrayOfMarkersAndCommandForIF[2] = source_string_stack.size();
+                    arrayOfMarkersAndCommandForIF[3] = source_string_stack.size();
+                   DoWithIF();
+                }
+            } else if (!callBack.empty() and callBack.top() == "else") {
+                arrayOfMarkersAndCommandForIF[3]=source_string_stack.size();
+                DoWithIF();
             } else if (callBack.top() == "for") {
                 // for for
                 for (int i = 0; i < 3; i++) {
@@ -229,6 +243,7 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
 
     return source_string_stack;
 }
+
 
 int Polish_Inverse_Writing::getPriority(const std::string &op) {
     if (op == "=" || op == "+=" || op == "-=" || op == "*=" || op == "/=")
@@ -307,5 +322,18 @@ void Polish_Inverse_Writing::SetValue(int equeal, int border) {
             source_string_stack[i].IndexOfMarkIntoMarkVectorFOR_COMMAND_IF = border;
             break;
         }
+    }
+}
+
+void Polish_Inverse_Writing::DoWithIF() {
+    source_string_stack[arrayOfMarkersAndCommandForIF[0]].IndexOfMarkIntoMarkVectorFOR_COMMAND_IF = arrayOfMarkersAndCommandForIF[2];
+    source_string_stack[arrayOfMarkersAndCommandForIF[1]].IndexOfMarkIntoMarkVectorFOR_COMMAND_MOVE = arrayOfMarkersAndCommandForIF[3];
+    arrayOfMarkersAndCommandForIF[0]=0;
+    arrayOfMarkersAndCommandForIF[1]=0;
+    arrayOfMarkersAndCommandForIF[2]=0;
+    arrayOfMarkersAndCommandForIF[3]=0;
+    if(!stack_of_array_of_markers_and_command_for_IF.empty()) {
+        arrayOfMarkersAndCommandForIF = stack_of_array_of_markers_and_command_for_IF.top();
+        stack_of_array_of_markers_and_command_for_IF.pop();
     }
 }
