@@ -37,8 +37,7 @@ std::vector<Lex> Polish_Inverse_Writing::FormingSourceLine() {
             }
         } else if (lex.value == "(") {
             stack_tmp.push(lex);
-            if (!callBack.empty() and callBack.top() == "while" or
-                callBack.top() == "if") {
+            if (!callBack.empty() and callBack.top() == "while") {
                 CurrentMetka++;
                 vector_of_metkes.push_back(-1);
                 vector_of_metkes[CurrentMetka] = source_string_stack.size();

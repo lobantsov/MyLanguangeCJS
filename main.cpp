@@ -22,12 +22,12 @@ int main() {
       // "C:\\Users\\loban\\OneDrive\\Desktop\\Foreach.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\Assigment.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\if.txt",
-       "D:\\VSJ\\MyLanguageCJS\\Testing and project plan\\testing\\IfElse.txt",
+       //"D:\\VSJ\\MyLanguageCJS\\Testing and project plan\\testing\\IfElse.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\WhileOperator.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\write.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\read.txt",
       // "C:\\Users\\loban\\OneDrive\\Desktop\\13.txt",
-      // "C:\\Users\\loban\\OneDrive\\Desktop\\Test1.txt",
+    "D:\\VSJ\\MyLanguageCJS\\Testing and project plan\\testing\\Test1.txt"
     //"D:\\VSJ\\MyLanguageCJS\\Testing and project plan\\testing\\13.txt"
       // "C:\\Users\\loban\\OneDrive\\Desktop\\Test3.txt",
       //   "C:\\Users\\loban\\OneDrive\\Desktop\\Test4.txt"
